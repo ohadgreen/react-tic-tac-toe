@@ -7,6 +7,7 @@ class SubmarinesBoard extends React.Component {
         this.state = {
             squares: Array(100).fill(null),
             turns: 0,
+            totalSubs: submarinesMap().length,
             destroyed: 0
         }
     }
@@ -17,14 +18,21 @@ class SubmarinesBoard extends React.Component {
         let destroyed = this.state.destroyed;
         const afterClickValue = findSquare(i) ? 'X' : '-';      
         squares[i] = afterClickValue;
-        let newDestroyed = findSubsDestroyed(squares);
-        if(newDestroyed > destroyed)
-            alert("another sub destroyed!");
-
+        let newDestroyed = findSubsDestroyed(squares);        
         this.setState({ squares: squares, turns: turnsCount + 1, destroyed: newDestroyed });
+        
+        if(newDestroyed > destroyed){
+            if(newDestroyed === this.state.totalSubs){
+                alert(`${this.state.totalSubs} were destroyed in ${turnsCount + 1} turns. Game Completed`);
+            }
+            else{
+                alert("another sub destroyed!");
+            }
+        }
     }
 
     render() {
+        const totalSubs = submarinesMap().length;
         // Build the rows in an array
         let rows = [];
         for (let y = 0; y < 10; y++) {
@@ -45,7 +53,7 @@ class SubmarinesBoard extends React.Component {
             <div><table><tbody>{rows}</tbody></table></div>
             <div className="game-info">
                 <p>turns: {this.state.turns}</p> 
-                <p>destroyed: {this.state.destroyed} / 5</p>
+                <p>destroyed: {this.state.destroyed} / {this.state.totalSubs}</p>
             </div>
         </div>);
     }
